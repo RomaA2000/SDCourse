@@ -1,0 +1,6 @@
+{
+  "version" : "5.131",
+  "protocol" : "https",
+  "api" : "api.vk.com",
+  "method" : "newsfeed.search"
+}

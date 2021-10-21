@@ -1,40 +1,18 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
-import java.util.function.BiConsumer;
 
 /**
  * @author akirakozov
  */
-public class QueryServlet extends HttpServlet {
-    private void getData(String commandSQL, String answer,
-                         HttpServletResponse response, BiConsumer<ResultSet, HttpServletResponse> logger) {
-        try {
-            try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery(commandSQL);
-                response.getWriter().println("<html><body>");
-                response.getWriter().println(answer);
-
-                logger.accept(rs, response);
-
-                response.getWriter().println("</body></html>");
-
-                rs.close();
-                stmt.close();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class QueryServlet extends AbstractServlet {
 
     private void getDataOrdered(String commandSQL, String answer,
                                 HttpServletResponse response) {
-        getData(commandSQL,
+        super.getData(commandSQL,
                 answer,
                 response,
                 (rsOf, responseOf) -> {
@@ -52,7 +30,7 @@ public class QueryServlet extends HttpServlet {
 
     private void getDataCount(String commandSQL, String answer,
                               HttpServletResponse response) {
-        getData(commandSQL,
+        super.getData(commandSQL,
                 answer,
                 response,
                 (rsOf, responseOf) -> {
@@ -66,8 +44,7 @@ public class QueryServlet extends HttpServlet {
                 });
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGetImpl(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
         switch (command) {
             case "max":
@@ -93,7 +70,5 @@ public class QueryServlet extends HttpServlet {
             default:
                 response.getWriter().println("Unknown command: " + command);
         }
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

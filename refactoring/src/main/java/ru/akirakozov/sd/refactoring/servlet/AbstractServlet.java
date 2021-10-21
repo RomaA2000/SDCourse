@@ -1,36 +1,21 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
+import ru.akirakozov.sd.refactoring.queries.QueryExecuter;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
-import java.util.function.BiConsumer;
 
 public abstract class AbstractServlet extends HttpServlet {
-    protected abstract void doGetImpl(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException;
+    protected final QueryExecuter queryExecuter;
 
-    void getData(String commandSQL, String answer,
-                 HttpServletResponse response, BiConsumer<ResultSet, HttpServletResponse> logger) {
-        try {
-            try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-                Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery(commandSQL);
-                response.getWriter().println("<html><body>");
-                response.getWriter().println(answer);
-
-                logger.accept(rs, response);
-
-                response.getWriter().println("</body></html>");
-
-                rs.close();
-                stmt.close();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+    protected AbstractServlet(QueryExecuter queryExecuter) {
+        this.queryExecuter = queryExecuter;
     }
+
+    protected abstract void doGetImpl(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

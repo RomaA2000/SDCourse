@@ -21,7 +21,7 @@ public class AddProductServletTest extends ServletTest {
                     Mockito.when(request.getParameter("price")).thenReturn("10");
                 }, (HttpServletRequest request, HttpServletResponse response) -> {
                     try {
-                        new AddProductServlet().doGet(request, response);
+                        new AddProductServlet(getQueryExecuter()).doGet(request, response);
                     } catch (IOException e) {
                         Assertions.fail("Exception: ", e);
                     }

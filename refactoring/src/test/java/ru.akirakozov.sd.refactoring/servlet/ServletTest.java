@@ -4,6 +4,11 @@ import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import ru.akirakozov.sd.refactoring.database.DataBase;
+import ru.akirakozov.sd.refactoring.database.DatabaseImpl;
+import ru.akirakozov.sd.refactoring.html.HtmlBuilderImpl;
+import ru.akirakozov.sd.refactoring.queries.QueryExecuter;
+import ru.akirakozov.sd.refactoring.queries.QueryExecuterImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,18 +23,25 @@ import java.util.function.Consumer;
 
 public class ServletTest {
     private static final String DB_PATH = "jdbc:sqlite:test.db";
-
     @Mock
     protected HttpServletRequest request;
-
     @Mock
     protected HttpServletResponse response;
 
-    protected static void updateDB(String statement) {
-        try (Connection c = DriverManager.getConnection(DB_PATH)) {
-            Statement stmt = c.createStatement();
-            stmt.executeUpdate(statement);
-            stmt.close();
+    protected static DataBase getDatabase() {
+        return new DatabaseImpl("jdbc:sqlite:src/test/resources/test.db");
+    }
+
+    protected static QueryExecuter getQueryExecuter() {
+        return new QueryExecuterImpl(getDatabase(), new HtmlBuilderImpl());
+    }
+
+    protected static void updateDB(String query) {
+        try {
+            getDatabase().databaseQuery(statement -> {
+                statement.executeUpdate(query);
+                statement.close();
+            });
         } catch (SQLException e) {
             e.printStackTrace();
             Assertions.fail();
@@ -77,12 +89,12 @@ public class ServletTest {
 
     public void templateResponseTest(List<String> assertions, Consumer<HttpServletRequest> mocker, BiConsumer<HttpServletRequest, HttpServletResponse> servletDoGet, BiFunction<String, StringWriter, Boolean> checker) {
         testResponse((StringWriter writer) -> {
-                mocker.accept(request);
-                servletDoGet.accept(request, response);
+            mocker.accept(request);
+            servletDoGet.accept(request, response);
 
-                assertions.forEach((String str) ->
+            assertions.forEach((String str) ->
                     Assertions.assertTrue(checker.apply(str, writer))
-                );
+            );
         });
     }
 }

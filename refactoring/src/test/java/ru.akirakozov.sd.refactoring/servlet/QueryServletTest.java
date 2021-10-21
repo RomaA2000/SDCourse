@@ -21,7 +21,7 @@ public class QueryServletTest extends ServletTest {
                     Mockito.when(request.getParameter("command")).thenReturn(command);
                 }, (HttpServletRequest request, HttpServletResponse response) -> {
                     try {
-                        new QueryServlet().doGet(request, response);
+                        new QueryServlet(getQueryExecuter()).doGet(request, response);
                     } catch (IOException e) {
                         Assertions.fail("Exception: ", e);
                     }

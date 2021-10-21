@@ -24,7 +24,7 @@ public class HtmlBuilderImpl implements HtmlBuilder {
         });
     }
 
-    public void buildHtml(PrintWriter printer, Optional<String> header, ResultSet rs) throws SQLException {
+    public void infoHtml(PrintWriter printer, Optional<String> header, ResultSet rs) throws SQLException {
         defaultHtml(printer, bodyBuilder -> {
             header.ifPresent(bodyBuilder::println);
             if (rs.next()) {

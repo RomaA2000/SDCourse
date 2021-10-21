@@ -5,7 +5,9 @@ import java.sql.Statement;
 
 public interface DataBase {
     @FunctionalInterface
-    public interface SQLConsumer {
+    interface SQLConsumer {
         void accept(Statement t) throws SQLException;
     }
+
+    void databaseQuery(SQLConsumer consumer) throws SQLException;
 }

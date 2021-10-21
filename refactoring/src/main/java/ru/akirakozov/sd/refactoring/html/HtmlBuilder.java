@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface HtmlBuilder {
     @FunctionalInterface
-    public interface WriterConsumer {
+    interface WriterConsumer {
         void accept(PrintWriter t) throws SQLException;
     }
 
-    public void productHtml(PrintWriter printer, Optional<String> header, ResultSet rs) throws SQLException;
+    void productHtml(PrintWriter printer, Optional<String> header, ResultSet rs) throws SQLException;
 
-    public void buildHtml(PrintWriter printer, Optional<String> header, ResultSet rs) throws SQLException;
+    void infoHtml(PrintWriter printer, Optional<String> header, ResultSet rs) throws SQLException;
 }

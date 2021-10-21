@@ -10,7 +10,7 @@ public class DatabaseImpl implements DataBase {
 
     public DatabaseImpl(final String path) { this.path = path; }
 
-    protected void databaseQuery(SQLConsumer consumer) throws SQLException {
+    public void databaseQuery(SQLConsumer consumer) throws SQLException {
         try (Connection c = DriverManager.getConnection(path)) {
             Statement stmt = c.createStatement();
             consumer.accept(stmt);

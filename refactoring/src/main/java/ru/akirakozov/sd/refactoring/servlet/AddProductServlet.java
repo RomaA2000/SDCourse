@@ -24,6 +24,7 @@ public class AddProductServlet extends HttpServlet {
                         "(NAME, PRICE) VALUES (\"" + name + "\"," + price + ")";
                 Statement stmt = c.createStatement();
                 stmt.executeUpdate(sql);
+
                 stmt.close();
             }
         } catch (Exception e) {

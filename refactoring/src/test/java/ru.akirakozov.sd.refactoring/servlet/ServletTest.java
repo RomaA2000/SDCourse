@@ -22,9 +22,9 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public class ServletTest {
-    private static final String DB_PATH = "jdbc:sqlite:test.db";
     @Mock
     protected HttpServletRequest request;
+
     @Mock
     protected HttpServletResponse response;
 
